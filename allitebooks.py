@@ -50,14 +50,19 @@ def index():
 #################################################################
 
 def download():
+    files = ZipFile(ZIP_NAME).namelist()
     with ZipFile(ZIP_NAME, 'a', ZIP_DEFLATED) as output:
         with open(FILE_NAME, 'r') as csvfile:
             reader = DictReader(csvfile)
             for row in reader:
-                b_name   = row['Download_Link']
-                response = get(b_name)
-                print('\rDownloading : {}'.format(b_name.split('/')[-1]), end='')
-                output.writestr(b_name.split('/')[-1], response.content)
+                b_name    = row['Download_Link']
+                response  = get(b_name)
+                file_name = b_name.split('/')[-1]
+                if file_name not in files:
+                    print('\rDownloading : {}'.format(file_name), end='')
+                    output.writestr(b_name.split('/')[-1], response.content)
+                else:
+                    print('\rSkipping : {}'.format(file_name), end='')
 
 if len(sys.argv) > 1:
     if sys.argv[1] == 'download': 
@@ -65,7 +70,7 @@ if len(sys.argv) > 1:
     elif sys.argv[1] == 'index': 
         index()
     else:
-        sys.exit()
+        sys.exit(1)
 else:
     index()
     download()
