@@ -22,7 +22,6 @@ ZIP_NAME  = 'allitebooks_ebooks.zip'
 
 html  = get('http://www.allitebooks.com/')
 html  = fromstring(html.text)
-pages = int(html.xpath('//*[@id="main-content"]/div/div/a[last()]/text()')[0])
 
 #################################################################
 #      INDEXING ALL THE EBOOKS AVAILABLE INTO A CSV FILE
@@ -31,19 +30,39 @@ pages = int(html.xpath('//*[@id="main-content"]/div/div/a[last()]/text()')[0])
 def index():
     with open(FILE_NAME, 'w') as csvfile:
         write = writer(csvfile)
-        write.writerow(['Book_Title', 'Book_Link', 'Download_Link'])
-        for page in tqdm(range(pages), 'Indexing pages'):
-            book = get('http://www.allitebooks.com/page/{}/'.format(page+1))
-            book = fromstring(book.text)
-            books_title = html.xpath('//*[@id="main-content"]//header/h2/a/text()')
-            books_link  = html.xpath('//*[@id="main-content"]//header/h2/a/@href')
-            downloads_l = []
-            for d in tqdm(books_link, 'Fetching download links'):
-                d_link = fromstring(get(d).text)
-                d_link = d_link.xpath('//*[@id="main-content"]/div/article/footer/div/span/a/@href')
-                downloads_l.append(d_link[0])
-            for index in range(len(books_title)):
-                write.writerow([books_title[index], books_link[index], downloads_l[index]])
+        write.writerow(['Book_Category', 'Book_Title', 'Book_Description', 'Book_Image', 
+                        'Book_Author', 'Book_ISBN', 'Download_Link'])
+        
+        categories_title = html.xpath('//*[@id="side-content"]/ul/li/a/text()')
+        categories_link  = html.xpath('//*[@id="side-content"]/ul/li/a/@href')
+        category         = dict(zip(categories_title, categories_link))
+
+        for title, link in tqdm(category.items(), 'Categories'):
+            category_html = get(link)
+            category_html = fromstring(category_html.text)
+            pages = int(category_html.xpath('//*[@id="main-content"]/div/div/a[last()]/text()')[0])
+            
+            for page in tqdm(range(pages), title):
+                books = get(link + 'page/{}/'.format(page+1))
+                books = fromstring(books.text)
+                books_link = books.xpath('//*[@id="main-content"]//header/h2/a/@href')
+                
+                for each_book in tqdm(books_link, 'Page - {}'.format(page+1)):
+                    book = get(each_book)
+                    book = fromstring(book.text)
+
+                    # Getting book details.
+                    book_category    = title
+                    book_title       = book.xpath('//*[@id="main-content"]/div/article/header/h1/text()')[0]
+                    book_description = (book.xpath('//*[@class="entry-content"]/p[1]/text() | \
+                                                    //*[@class="entry-content"]/div[1]/text()') or [None])[0]
+                    book_image       = (book.xpath('//*[@id="main-content"]/div/article/header/div/div[1]/a/img/@src') or [None])[0]
+                    book_author      = (book.xpath('//*[@id="main-content"]//div[@class="book-detail"]//dd[1]/a/text()') or [None])
+                    book_author      = ', '.join(x for x in book_author) if len(book_author) > 1 else (book_author[0] or [None])
+                    book_isbn        = (book.xpath('//*[@id="main-content"]//div[@class="book-detail"]//dd[2]/text()') or [None])[0]
+                    download_link    = book.xpath('//*[@id="main-content"]/div/article/footer/div/span/a/@href')[0]
+
+                    write.writerow([book_category, book_title, book_description, book_image, book_author, book_isbn, download_link])
 
 #################################################################
 #      DOWNLOADING ALL THE EBOOKS AVAILABLE FROM CSV FILE
