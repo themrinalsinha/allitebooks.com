@@ -60,7 +60,7 @@ def index():
                     book_author      = (book.xpath('//*[@id="main-content"]//div[@class="book-detail"]//dd[1]/a/text()') or [None])
                     book_author      = ', '.join(x for x in book_author) if len(book_author) > 1 else (book_author[0] or [None])
                     book_isbn        = (book.xpath('//*[@id="main-content"]//div[@class="book-detail"]//dd[2]/text()') or [None])[0]
-                    download_link    = book.xpath('//*[@id="main-content"]/div/article/footer/div/span/a/@href')[0]
+                    download_link    = (book.xpath('//*[@id="main-content"]//span[@class="download-links"][1]/a/@href') or [None])[0]
 
                     write.writerow([book_category, book_title, book_description, book_image, book_author, book_isbn, download_link])
 
