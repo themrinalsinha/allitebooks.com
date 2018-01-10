@@ -86,7 +86,9 @@ def index():
 #################################################################
 
 def download():
-    files = ZipFile(ZIP_NAME).namelist()
+    try:
+        files = ZipFile(ZIP_NAME).namelist()
+    except: files = []
     with ZipFile(ZIP_NAME, 'a', ZIP_DEFLATED) as output:
         with open(FILE_NAME, 'r') as csvfile:
             reader = DictReader(csvfile)
