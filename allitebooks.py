@@ -30,19 +30,19 @@ html  = fromstring(html.text)
 def index():
     with open(FILE_NAME, 'w') as csvfile:
         write = writer(csvfile)
-        write.writerow(['Book_Category', 'Book_Title', 'Book_Description', 'Book_Image', 
-                        'Book_Author', 'Book_ISBN', 'Download_Link'])
-        
+        write.writerow(['Category', 'Title', 'Author(s)', 'ISBN', 'Year', 'Cover_Image', 'Description',
+                        'Pages', 'Categories', 'Language', 'File_Size', 'File_Format', 'Download_Link'])
+
         categories_title = html.xpath('//*[@id="side-content"]/ul/li/a/text()')
         categories_link  = html.xpath('//*[@id="side-content"]/ul/li/a/@href')
         category         = dict(zip(categories_title, categories_link))
 
-        for title, link in tqdm(category.items(), 'Categories'):
+        for c_title, link in tqdm(category.items(), 'Categories'):
             category_html = get(link)
             category_html = fromstring(category_html.text)
             pages = int(category_html.xpath('//*[@id="main-content"]/div/div/a[last()]/text()')[0])
             
-            for page in tqdm(range(pages), title):
+            for page in tqdm(range(pages), c_title):
                 books = get(link + 'page/{}/'.format(page+1))
                 books = fromstring(books.text)
                 books_link = books.xpath('//*[@id="main-content"]//header/h2/a/@href')
