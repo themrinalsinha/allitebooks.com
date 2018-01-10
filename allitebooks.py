@@ -51,18 +51,35 @@ def index():
                     book = get(each_book)
                     book = fromstring(book.text)
 
-                    # Getting book details.
-                    book_category    = title
-                    book_title       = book.xpath('//*[@id="main-content"]/div/article/header/h1/text()')[0]
-                    book_description = (book.xpath('//*[@class="entry-content"]/p[1]/text() | \
-                                                    //*[@class="entry-content"]/div[1]/text()') or [None])[0]
-                    book_image       = (book.xpath('//*[@id="main-content"]/div/article/header/div/div[1]/a/img/@src') or [None])[0]
-                    book_author      = (book.xpath('//*[@id="main-content"]//div[@class="book-detail"]//dd[1]/a/text()') or [None])
-                    book_author      = ', '.join(x for x in book_author) if len(book_author) > 1 else (book_author[0] or [None])
-                    book_isbn        = (book.xpath('//*[@id="main-content"]//div[@class="book-detail"]//dd[2]/text()') or [None])[0]
-                    download_link    = (book.xpath('//*[@id="main-content"]//span[@class="download-links"][1]/a/@href') or [None])[0]
+                    def get_value(name, link = None):
+                        header_details = book.xpath('//*[@id="main-content"]/div/article/header')[0]
+                        if name is 'title': return (header_details.xpath('./h1/text()') or [''])[0]
+                        if name is 'dlink': return (book.xpath('//span[@class="download-links"]/a[contains\
+                                                    (@href, "file.allitebooks.com")]/@href') or [''])[0]
+                        if name is 'cover': return (header_details.xpath('.//div/a/img/@src') or [''])[0]
+                        if name is 'descr':
+                            desc = book.xpath('//div[@class="entry-content"]//text()')
+                            return ' '.join([x for x in [x.strip() for x in desc]])
+                        if link: return ', '.join([x for x in (header_details.xpath('.//*[text() = "{}"]\
+                                            /following-sibling::dd[1]/a/text()'.format(name)) or [''])])
+                        return (header_details.xpath('.//*[text() = "{}"]/following-sibling::dd[1]//text()'.format(name)) or [''])[0]
 
-                    write.writerow([book_category, book_title, book_description, book_image, book_author, book_isbn, download_link])
+                    category      = c_title
+                    book_name     = get_value('title')
+                    cover_img     = get_value('cover')
+                    authors       = get_value('Author:', link = True)
+                    isbn          = get_value('ISBN-10:')
+                    year          = get_value('Year:')
+                    pages         = get_value('Pages:')
+                    description   = get_value('descr')
+                    language      = get_value('Language:')
+                    file_size     = get_value('File size:')
+                    file_format   = get_value('File format:')
+                    categories    = get_value('Category:', link = True)
+                    download_link = get_value('dlink')
+
+                    write.writerow([category, book_name, authors, isbn, year, cover_img, description,
+                                    pages, categories, language, file_size, file_format, download_link])
 
 #################################################################
 #      DOWNLOADING ALL THE EBOOKS AVAILABLE FROM CSV FILE
