@@ -26,7 +26,8 @@ db_schema = """
         file_size     CHAR,
         file_format   CHAR,
         categories    CHAR,
-        download_link CHAR NOT NULL UNIQUE );
+        download_link CHAR NOT NULL UNIQUE,
+        download_file BLOB );
 """
 
 html = get('http://www.allitebooks.com/')
@@ -52,6 +53,7 @@ for c_title, link in tqdm(category.items(), 'Categories'):
         for each_book in tqdm(books_link, 'Page - {}'.format(page+1)):
             book = get(each_book)
             book = fromstring(book.text)
+            down = get(get_value('dlink'))
 
             def get_value(name, link = None):
                 header_details = book.xpath('//*[@id="main-content"]/div/article/header')[0]
@@ -68,11 +70,11 @@ for c_title, link in tqdm(category.items(), 'Categories'):
 
             curs.execute("INSERT OR REPLACE INTO ebooks_index \
                         (category, book_name, cover_img, authors, isbn, year, pages, description, \
-                        language, file_size, file_format, categories, download_link) VALUES \
-                        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (c_title, get_value('title'), \
+                        language, file_size, file_format, categories, download_link, download_file) VALUES \
+                        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (c_title, get_value('title'), \
                         get_value('cover'), get_value('Author:', link = True), get_value('ISBN-10:'),\
                         get_value('Year:'), get_value('Pages:'), get_value('descr'), get_value('Language:'),\
                         get_value('File size:'), get_value('File format:'), get_value('Category:', link = True),\
-                        get_value('dlink')))
+                        get_value('dlink'), down.content))
             conn.commit()
 conn.close()
