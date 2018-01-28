@@ -15,7 +15,7 @@ from requests  import get
 from tqdm      import tqdm
 from csv       import writer, DictReader
 from zipfile   import ZipFile, ZIP_DEFLATED
-import sys
+from sys       import argv, exit
 
 FILE_NAME = 'books_list.csv'
 ZIP_NAME  = 'allitebooks_ebooks.zip'
@@ -102,13 +102,13 @@ def download():
                 else:
                     print('\rSkipping : {}'.format(file_name), end='')
 
-if len(sys.argv) > 1:
-    if sys.argv[1] == 'download': 
+if len(argv) > 1:
+    if argv[1] == 'download': 
         download()
-    elif sys.argv[1] == 'index': 
+    elif argv[1] == 'index': 
         index()
     else:
-        sys.exit(1)
+        exit(1)
 else:
     index()
     download()
