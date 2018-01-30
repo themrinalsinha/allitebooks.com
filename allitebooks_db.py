@@ -53,7 +53,6 @@ for c_title, link in tqdm(category.items(), 'Categories'):
         for each_book in tqdm(books_link, 'Page - {}'.format(page+1)):
             book = get(each_book)
             book = fromstring(book.text)
-            down = get(get_value('dlink'))
 
             def get_value(name, link = None):
                 header_details = book.xpath('//*[@id="main-content"]/div/article/header')[0]
@@ -68,6 +67,7 @@ for c_title, link in tqdm(category.items(), 'Categories'):
                                     /following-sibling::dd[1]/a/text()'.format(name)) or [''])])
                 return (header_details.xpath('.//*[text() = "{}"]/following-sibling::dd[1]//text()'.format(name)) or [''])[0]
 
+            down = get(get_value('dlink'))
             curs.execute("INSERT OR REPLACE INTO ebooks_index \
                         (category, book_name, cover_img, authors, isbn, year, pages, description, \
                         language, file_size, file_format, categories, download_link, download_file) VALUES \
