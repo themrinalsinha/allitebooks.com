@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.deep_purple-pink.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
     #view-source {
       position: fixed;
@@ -26,25 +26,6 @@
       <main class="mdl-layout__content">
         <div class="mdl-layout__tab-panel is-active" id="overview">
 
-
-          <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
-            <header class="section__play-btn mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone mdl-color--teal-100 mdl-color-text--white">
-              <img width="100%" src="#">
-            </header>
-            <div class="mdl-card mdl-cell mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
-              <div class="mdl-card__supporting-text">
-                <h4>book title</h4>
-                <h6>By:  book author</h6>
-                <h6>Category : book category</h6>
-                Description of book
-              </div>
-              <div class="mdl-card__actions">
-                <a href="#" class="mdl-button" target="_blank">DOWNLOAD</a>
-                <a href="#" class="mdl-button">File size : {}</a>
-                <a href="#" class="mdl-button">Pages : {}</a>
-              </div>
-            </div>
-          </section>
 
 
         </div>
