@@ -32,6 +32,17 @@
               <img width="100%" src="{{ data[2] }}">
             </header>
             <div class="mdl-card mdl-cell mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
+              <div class="mdl-card__supporting-text">
+                <h4>{{ data[1] }}</h4>
+                <h6>By: {{ data[3] }}</h6>
+                <h6>Category : {{ data[0] }}</h6>
+                 {{ data[5][:1000] }}
+              </div>
+              <div class="mdl-card__actions">
+                <a href="{{ data[7] }}" class="mdl-button" target="_blank">DOWNLOAD</a>
+                <a href="#" class="mdl-button">File size : {{ data[6] }}</a>
+                <a href="#" class="mdl-button">Pages : {{ data[4] }}</a>
+              </div>
             </div>
           </section>
           {% endfor %}
