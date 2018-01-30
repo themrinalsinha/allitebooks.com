@@ -26,7 +26,13 @@
       <main class="mdl-layout__content">
         <div class="mdl-layout__tab-panel is-active" id="overview">
 
-
+          {% for data in result %}
+          <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+            <header class="section__play-btn mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone mdl-color--teal-100 mdl-color-text--white">
+              <img width="100%" src="{{ data[2] }}">
+            </header>
+          </section>
+          {% endfor %}
 
         </div>
         <div class="mdl-layout__tab-panel" id="features">
