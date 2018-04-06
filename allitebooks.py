@@ -41,12 +41,12 @@ def index():
             category_html = get(link)
             category_html = fromstring(category_html.text)
             pages = int(category_html.xpath('//*[@id="main-content"]/div/div/a[last()]/text()')[0])
-            
+
             for page in tqdm(range(pages), c_title):
                 books = get(link + 'page/{}/'.format(page+1))
                 books = fromstring(books.text)
                 books_link = books.xpath('//*[@id="main-content"]//header/h2/a/@href')
-                
+
                 for each_book in tqdm(books_link, 'Page - {}'.format(page+1)):
                     book = get(each_book)
                     book = fromstring(book.text)
@@ -102,13 +102,16 @@ def download():
                 else:
                     print('\rSkipping : {}'.format(file_name), end='')
 
-if len(argv) > 1:
-    if argv[1] == 'download': 
-        download()
-    elif argv[1] == 'index': 
-        index()
+if __name__ == '__main__':
+    print('Enter your choice')
+    print('1 - Scrape Index (List all the ebooks in a csv file with download link)\
+         \n2 - Scrape All (Index and Download to ZIP)\n')
+    choice = int(input('Enter your choice : '))
+    if isinstance(choice, int) and choice in [1, 2]:
+        if choice == 1:
+            index()
+        else:
+            index()
+            download()
     else:
-        exit(1)
-else:
-    index()
-    download()
+        raise RuntimeError('Enter valid Choice')
