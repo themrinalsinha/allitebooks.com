@@ -2,15 +2,15 @@
 # Author : Mrinal Sinha
 
 """
-    Python Script to download all the ebooks from 
+    Python Script to download all the ebooks from
     'allitebooks.com' into a mysqlite database.
 """
 
-from lxml.html import fromstring
-from requests  import get
-from sqlite3   import connect
-from tqdm      import tqdm
-from os        import path, makedirs
+from lxml.html          import fromstring
+from requests           import get
+from sqlite3            import connect
+from tqdm               import tqdm
+from os                 import path, makedirs
 
 db_schema = """
     CREATE TABLE IF NOT EXISTS ebooks_index (
@@ -44,12 +44,12 @@ for c_title, link in tqdm(category.items(), 'Categories'):
     category_html = get(link)
     category_html = fromstring(category_html.text)
     pages = int(category_html.xpath('//*[@id="main-content"]/div/div/a[last()]/text()')[0])
-    
+
     for page in tqdm(range(pages), c_title):
         books = get(link + 'page/{}/'.format(page+1))
         books = fromstring(books.text)
         books_link = books.xpath('//*[@id="main-content"]//header/h2/a/@href')
-        
+
         for each_book in tqdm(books_link, 'Page - {}'.format(page+1)):
             book = get(each_book)
             book = fromstring(book.text)
