@@ -81,9 +81,9 @@ def index():
                     write.writerow([category, book_name, authors, isbn, year, cover_img, description,
                                     pages, categories, language, file_size, file_format, download_link])
 
-#################################################################
+################################################################
 #      DOWNLOADING ALL THE EBOOKS AVAILABLE FROM CSV FILE
-#################################################################
+################################################################
 
 def download():
     try:
