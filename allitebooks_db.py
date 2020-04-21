@@ -56,11 +56,11 @@ for c_title, link in tqdm(category.items(), 'Categories'):
 
             def get_value(name, link = None):
                 header_details = book.xpath('//*[@id="main-content"]/div/article/header')[0]
-                if name is 'title': return (header_details.xpath('./h1/text()') or [''])[0]
-                if name is 'dlink': return (book.xpath('//span[@class="download-links"]/a[contains\
+                if name == 'title': return (header_details.xpath('./h1/text()') or [''])[0]
+                if name == 'dlink': return (book.xpath('//span[@class="download-links"]/a[contains\
                                             (@href, "file.allitebooks.com")]/@href') or [''])[0]
-                if name is 'cover': return (header_details.xpath('.//div/a/img/@src') or [''])[0]
-                if name is 'descr':
+                if name == 'cover': return (header_details.xpath('.//div/a/img/@src') or [''])[0]
+                if name == 'descr':
                     desc = book.xpath('//div[@class="entry-content"]//text()')
                     return ' '.join([x for x in [x.strip() for x in desc]])
                 if link: return ', '.join([x for x in (header_details.xpath('.//*[text() = "{}"]\
